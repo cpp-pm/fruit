@@ -25,6 +25,7 @@ endif()
 # Installation (https://github.com/forexample/package-example)
 
 set(config_install_dir "lib/cmake/${PROJECT_NAME}")
+set(include_install_dir "include")
 
 set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
@@ -48,7 +49,9 @@ write_basic_package_version_file(
 install(TARGETS fruit
         EXPORT "${targets_export_name}"
         ARCHIVE DESTINATION "${INSTALL_LIBRARY_DIR}"
-        LIBRARY DESTINATION "${INSTALL_LIBRARY_DIR}")
+        LIBRARY DESTINATION "${INSTALL_LIBRARY_DIR}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
 
 install(
     FILES "${project_config}" "${version_config}"
