@@ -24,42 +24,42 @@ endif()
 ####
 # Installation (https://github.com/forexample/package-example)
 
-set(config_install_dir "lib/cmake/${PROJECT_NAME}")
-set(include_install_dir "include")
+set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
+set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_CONFIG_DIR "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME}")
+set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
-set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+set(VERSION_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
+set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
 
-set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
-set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
-set(targets_export_name "${PROJECT_NAME}Targets")
-set(namespace "${PROJECT_NAME}::")
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets" CACHE INTERNAL "")
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file("${PROJECT_NAME}Config.cmake.in"
-  ${project_config}
-  INSTALL_DESTINATION ${config_install_dir}
-  PATH_VARS INSTALL_INCLUDE_DIR)
-
-# Note: PROJECT_VERSION is used as a VERSION
 write_basic_package_version_file(
-    "${version_config}" COMPATIBILITY SameMajorVersion
+  "${VERSION_CONFIG}" COMPATIBILITY SameMajorVersion
 )
 
-install(TARGETS fruit
-        EXPORT "${targets_export_name}"
-        ARCHIVE DESTINATION "${INSTALL_LIBRARY_DIR}"
-        LIBRARY DESTINATION "${INSTALL_LIBRARY_DIR}"
-        INCLUDES DESTINATION "${include_install_dir}"
-)
-
-install(
-    FILES "${project_config}" "${version_config}"
-    DESTINATION "${config_install_dir}"
+configure_package_config_file("${PROJECT_NAME}Config.cmake.in"
+  ${PROJECT_CONFIG}
+  INSTALL_DESTINATION ${INSTALL_CONFIG_DIR}
+  PATH_VARS INSTALL_INCLUDE_DIR
 )
 
 install(
-    EXPORT "${targets_export_name}"
-    NAMESPACE "${namespace}"
-    DESTINATION "${config_install_dir}"
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  NAMESPACE "${PROJECT_NAME}::"
+  DESTINATION "${INSTALL_CONFIG_DIR}"
+)
+
+install(
+  FILES "${PROJECT_CONFIG}" "${VERSION_CONFIG}"
+  DESTINATION "${INSTALL_CONFIG_DIR}"
+)
+install(
+  TARGETS fruit
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  ARCHIVE DESTINATION "${INSTALL_LIBRARY_DIR}"
+  LIBRARY DESTINATION "${INSTALL_LIBRARY_DIR}"
+  INCLUDES DESTINATION "${INSTALL_INCLUDE_DIR}"
 )

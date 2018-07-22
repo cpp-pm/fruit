@@ -89,9 +89,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 # of the user-friendly default that hides Fruit internals).
 #add_definitions(-DFRUIT_DEEP_TEMPLATE_INSTANTIATION_STACKTRACES_FOR_ERRORS)
 
-set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
-set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
-
 set(FRUIT_VERSION "${PROJECT_VERSION}")
 
 add_subdirectory(configuration)
@@ -108,9 +105,7 @@ endif()
 
 add_subdirectory(extras EXCLUDE_FROM_ALL)
 
-install(DIRECTORY include/fruit/
-  DESTINATION "${INSTALL_INCLUDE_DIR}"
-  FILES_MATCHING PATTERN "*.h")
+# CPACK
 
 set(CPACK_PACKAGE_NAME "Fruit")
 set(CPACK_PACKAGE_VENDOR "Marco Poletti")
