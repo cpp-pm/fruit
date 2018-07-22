@@ -24,16 +24,6 @@ endif()
 ####
 # Installation (https://github.com/forexample/package-example)
 
-set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
-set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
-set(INSTALL_CONFIG_DIR "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME}")
-set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
-
-set(VERSION_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
-set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
-
-set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets" CACHE INTERNAL "")
-
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
@@ -56,6 +46,12 @@ install(
   FILES "${PROJECT_CONFIG}" "${VERSION_CONFIG}"
   DESTINATION "${INSTALL_CONFIG_DIR}"
 )
+
+install(DIRECTORY include/fruit/
+  DESTINATION "${INSTALL_INCLUDE_DIR}"
+  FILES_MATCHING PATTERN "*.h"
+)
+
 install(
   TARGETS fruit
   EXPORT "${TARGETS_EXPORT_NAME}"
