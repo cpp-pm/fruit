@@ -35,6 +35,11 @@ set(namespace "${PROJECT_NAME}::")
 
 include(CMakePackageConfigHelpers)
 
+configure_package_config_file("${PROJECT_NAME}Config.cmake.in"
+  ${project_config}
+  INSTALL_DESTINATION ${config_install_dir}
+  PATH_VARS INSTALL_INCLUDE_DIR)
+
 # Note: PROJECT_VERSION is used as a VERSION
 write_basic_package_version_file(
     "${version_config}" COMPATIBILITY SameMajorVersion
