@@ -1,3 +1,3 @@
 @PACKAGE_INIT@
 
-include("@PACKAGE_INSTALL_CONFIG_DIR@/GTestTargets.cmake")
+include("@PACKAGE_INSTALL_CONFIG_DIR@/@TARGETS_EXPORT_NAME@.cmake")
