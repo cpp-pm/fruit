@@ -8,14 +8,7 @@ endif()
 # CMake on OSX likes to see this set explicitly, otherwise it outputs a warning.
 set(CMAKE_MACOSX_RPATH 1)
 
-if(NOT "${CMAKE_BUILD_TYPE}" MATCHES "^(Debug|Release|RelWithDebInfo|MinSizeRel)$")
-  message(FATAL_ERROR "Please re-run CMake, specifying -DCMAKE_BUILD_TYPE=Debug , -DCMAKE_BUILD_TYPE=Release , -DCMAKE_BUILD_TYPE=RelWithDebInfo or -DCMAKE_BUILD_TYPE=MinSizeRel .")
-endif()
-
 option(BUILD_SHARED_LIBS "Build shared library" ON)
-
-# The Visual Studio CMake generators default to multiple configurations, but Fruit doesn't support multi-configuration build directories.
-set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}")
 
 if(NOT "${RUNTIME_OUTPUT_DIRECTORY}")
   set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
