@@ -1,4 +1,6 @@
-project(Fruit)
+cmake_policy(SET CMP0048 NEW)
+
+project(Fruit VERSION "3.1.1")
 cmake_minimum_required(VERSION 2.8)
 
 if (POLICY CMP0054)
@@ -90,7 +92,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
 set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
 
-set(FRUIT_VERSION "3.1.1")
+set(FRUIT_VERSION "${PROJECT_VERSION}")
 
 add_subdirectory(configuration)
 add_subdirectory(src)
