@@ -89,7 +89,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 # of the user-friendly default that hides Fruit internals).
 #add_definitions(-DFRUIT_DEEP_TEMPLATE_INSTANTIATION_STACKTRACES_FOR_ERRORS)
 
-set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
 set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
 set(INSTALL_CONFIG_DIR "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME}")
 set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
