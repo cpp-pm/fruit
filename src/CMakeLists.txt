@@ -33,7 +33,7 @@ write_basic_package_version_file(
 configure_package_config_file("${PROJECT_NAME}Config.cmake.in"
   ${PROJECT_CONFIG}
   INSTALL_DESTINATION ${INSTALL_CONFIG_DIR}
-  PATH_VARS INSTALL_INCLUDE_DIR
+  PATH_VARS INSTALL_INCLUDE_DIR INSTALL_LIBRARY_DIR
 )
 
 install(
