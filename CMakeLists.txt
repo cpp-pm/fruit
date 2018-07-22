@@ -47,11 +47,13 @@ if("${FRUIT_ENABLE_COVERAGE}")
   set(FRUIT_ADDITIONAL_LINKER_FLAGS "${FRUIT_ADDITIONAL_LINKER_FLAGS} -fprofile-arcs -ftest-coverage -fno-exceptions -fno-inline -O0")
 endif()
 
-set(FRUIT_USES_BOOST TRUE CACHE BOOL
-        "Whether to use Boost (specifically, boost::unordered_set and boost::unordered_map).
-        If this is false, Fruit will use std::unordered_set and std::unordered_map instead (however this causes injection to be a bit slower).")
+option(FRUIT_USES_BOOST
+  "Whether to use Boost (specifically, boost::unordered_set and boost::unordered_map).
+  If this is false, Fruit will use std::unordered_set and std::unordered_map instead (however this causes injection to be a bit slower)."
+  ON
+)
 
-if("${WIN32}" AND "${FRUIT_USES_BOOST}")
+if("${WIN32}" AND FRUIT_USES_BOOST)
   set(BOOST_DIR "" CACHE PATH "The directory where the boost library is installed, e.g. C:\\boost\\boost_1_62_0.")
   if("${BOOST_DIR}" STREQUAL "")
     message(FATAL_ERROR "Please re-run CMake, specifying the boost library path as BOOST_DIR, e.g. -DBOOST_DIR=C:\\boost\\boost_1_62_0.")
