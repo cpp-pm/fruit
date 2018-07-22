@@ -56,6 +56,6 @@ install(
 )
 
 install(
-  DIRECTORY include/fruit
+  DIRECTORY "${CMAKE_SOURCE_DIR}/include/fruit/"
   DESTINATION "${INSTALL_INCLUDE_DIR}"
 )
