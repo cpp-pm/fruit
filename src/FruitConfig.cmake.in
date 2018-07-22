@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+set_and_check(FRUIT_INCLUDE_DIR "@PACKAGE_INSTALL_INCLUDE_DIR@")
+
+check_required_components(Fruit)
