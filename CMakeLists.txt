@@ -69,14 +69,7 @@ if(FRUIT_USES_BOOST)
   hunter_add_package(Boost)
   find_package(Boost CONFIG REQUIRED)
 
-  #DEBUG
-  get_cmake_property(_variableNames VARIABLES)
-  foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-  endforeach()
-
   if(BOOST_ROOT)
-    message(STATUS "Hello ${BOOST_ROOT}")
     set(BOOST_DIR "${BOOST_ROOT}/include")
   endif()
 
