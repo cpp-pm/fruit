@@ -117,16 +117,30 @@ set(FRUIT_VERSION "${PROJECT_VERSION}")
 add_subdirectory(configuration)
 add_subdirectory(src)
 
+option(FRUIT_BUILD_TESTS "Build tests ON/OFF" ON)
+option(FRUIT_BUILD_EXAMPLES "Build examples ON/OFF" ON)
+option(FRUIT_BUILD_EXTRAS "Build docs/benchmarks/packaging ON/OFF" ON)
+
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   # Do not exclude these from "make all" in debug mode, they must build.
-  add_subdirectory(examples)
-  add_subdirectory(tests)
+  if(FRUIT_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+  endif()
+  if(FRUIT_BUILD_TESTS)
+    add_subdirectory(tests)
+  endif()
 else()
-  add_subdirectory(examples EXCLUDE_FROM_ALL)
-  add_subdirectory(tests)
+  if(FRUIT_BUILD_EXAMPLES)
+    add_subdirectory(examples EXCLUDE_FROM_ALL)
+  endif()
+  if(FRUIT_BUILD_TESTS)
+    add_subdirectory(tests)
+  endif()
 endif()
 
-add_subdirectory(extras EXCLUDE_FROM_ALL)
+if(FRUIT_BUILD_EXTRAS)
+  add_subdirectory(extras EXCLUDE_FROM_ALL)
+endif()
 
 # CPACK
 
