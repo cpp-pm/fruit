@@ -21,9 +21,6 @@ else()
     add_library(fruit STATIC ${FRUIT_SOURCES})
 endif()
 
-####
-# Installation (https://github.com/forexample/package-example)
-
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(

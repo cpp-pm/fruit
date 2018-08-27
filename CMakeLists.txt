@@ -1,5 +1,15 @@
 cmake_policy(SET CMP0048 NEW)
 
+include(cmake/HunterGate.cmake)
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.23.19.tar.gz"
+    SHA1 "1a01f9e776bff51dce3e21e99b75fc09d2778e06"
+)
+
+if(NOT "${CMAKE_CXX_STANDARD}")
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+
 project(Fruit VERSION "3.1.1")
 cmake_minimum_required(VERSION 2.8)
 
@@ -55,11 +65,21 @@ option(FRUIT_USES_BOOST
   ON
 )
 
-if("${WIN32}" AND FRUIT_USES_BOOST)
-  set(BOOST_DIR "" CACHE PATH "The directory where the boost library is installed, e.g. C:\\boost\\boost_1_62_0.")
-  if("${BOOST_DIR}" STREQUAL "")
-    message(FATAL_ERROR "Please re-run CMake, specifying the boost library path as BOOST_DIR, e.g. -DBOOST_DIR=C:\\boost\\boost_1_62_0.")
+if(FRUIT_USES_BOOST)
+  hunter_add_package(Boost)
+  find_package(Boost CONFIG REQUIRED)
+
+  #DEBUG
+  get_cmake_property(_variableNames VARIABLES)
+  foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+  endforeach()
+
+  if(BOOST_ROOT)
+    message(STATUS "Hello ${BOOST_ROOT}")
+    set(BOOST_DIR "${BOOST_ROOT}/include")
   endif()
+
   include_directories("${BOOST_DIR}")
 endif()
 
