@@ -1,4 +1,16 @@
-project(Fruit)
+cmake_policy(SET CMP0048 NEW)
+
+include(cmake/HunterGate.cmake)
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.23.19.tar.gz"
+    SHA1 "1a01f9e776bff51dce3e21e99b75fc09d2778e06"
+)
+
+if(NOT "${CMAKE_CXX_STANDARD}")
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+
+project(Fruit VERSION "3.1.1")
 cmake_minimum_required(VERSION 2.8)
 
 if (POLICY CMP0054)
@@ -8,14 +20,7 @@ endif()
 # CMake on OSX likes to see this set explicitly, otherwise it outputs a warning.
 set(CMAKE_MACOSX_RPATH 1)
 
-if(NOT "${CMAKE_BUILD_TYPE}" MATCHES "^(Debug|Release|RelWithDebInfo|MinSizeRel)$")
-  message(FATAL_ERROR "Please re-run CMake, specifying -DCMAKE_BUILD_TYPE=Debug , -DCMAKE_BUILD_TYPE=Release , -DCMAKE_BUILD_TYPE=RelWithDebInfo or -DCMAKE_BUILD_TYPE=MinSizeRel .")
-endif()
-
 option(BUILD_SHARED_LIBS "Build shared library" ON)
-
-# The Visual Studio CMake generators default to multiple configurations, but Fruit doesn't support multi-configuration build directories.
-set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}")
 
 if(NOT "${RUNTIME_OUTPUT_DIRECTORY}")
   set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
@@ -54,15 +59,20 @@ if("${FRUIT_ENABLE_COVERAGE}")
   set(FRUIT_ADDITIONAL_LINKER_FLAGS "${FRUIT_ADDITIONAL_LINKER_FLAGS} -fprofile-arcs -ftest-coverage -fno-exceptions -fno-inline -O0")
 endif()
 
-set(FRUIT_USES_BOOST TRUE CACHE BOOL
-        "Whether to use Boost (specifically, boost::unordered_set and boost::unordered_map).
-        If this is false, Fruit will use std::unordered_set and std::unordered_map instead (however this causes injection to be a bit slower).")
+option(FRUIT_USES_BOOST
+  "Whether to use Boost (specifically, boost::unordered_set and boost::unordered_map).
+  If this is false, Fruit will use std::unordered_set and std::unordered_map instead (however this causes injection to be a bit slower)."
+  ON
+)
 
-if("${WIN32}" AND "${FRUIT_USES_BOOST}")
-  set(BOOST_DIR "" CACHE PATH "The directory where the boost library is installed, e.g. C:\\boost\\boost_1_62_0.")
-  if("${BOOST_DIR}" STREQUAL "")
-    message(FATAL_ERROR "Please re-run CMake, specifying the boost library path as BOOST_DIR, e.g. -DBOOST_DIR=C:\\boost\\boost_1_62_0.")
+if(FRUIT_USES_BOOST)
+  hunter_add_package(Boost)
+  find_package(Boost CONFIG REQUIRED)
+
+  if(BOOST_ROOT)
+    set(BOOST_DIR "${BOOST_ROOT}/include")
   endif()
+
   include_directories("${BOOST_DIR}")
 endif()
 
@@ -92,28 +102,47 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 # of the user-friendly default that hides Fruit internals).
 #add_definitions(-DFRUIT_DEEP_TEMPLATE_INSTANTIATION_STACKTRACES_FOR_ERRORS)
 
-set(INSTALL_INCLUDE_DIR include/fruit CACHE PATH "Installation directory for headers")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
 set(INSTALL_LIBRARY_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_CONFIG_DIR "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME}")
+set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
-set(FRUIT_VERSION "3.1.1")
+set(VERSION_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
+set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
+
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets" CACHE INTERNAL "")
+
+set(FRUIT_VERSION "${PROJECT_VERSION}")
 
 add_subdirectory(configuration)
 add_subdirectory(src)
 
+option(FRUIT_BUILD_TESTS "Build tests ON/OFF" ON)
+option(FRUIT_BUILD_EXAMPLES "Build examples ON/OFF" ON)
+option(FRUIT_BUILD_EXTRAS "Build docs/benchmarks/packaging ON/OFF" ON)
+
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   # Do not exclude these from "make all" in debug mode, they must build.
-  add_subdirectory(examples)
-  add_subdirectory(tests)
+  if(FRUIT_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+  endif()
+  if(FRUIT_BUILD_TESTS)
+    add_subdirectory(tests)
+  endif()
 else()
-  add_subdirectory(examples EXCLUDE_FROM_ALL)
-  add_subdirectory(tests)
+  if(FRUIT_BUILD_EXAMPLES)
+    add_subdirectory(examples EXCLUDE_FROM_ALL)
+  endif()
+  if(FRUIT_BUILD_TESTS)
+    add_subdirectory(tests)
+  endif()
 endif()
 
-add_subdirectory(extras EXCLUDE_FROM_ALL)
+if(FRUIT_BUILD_EXTRAS)
+  add_subdirectory(extras EXCLUDE_FROM_ALL)
+endif()
 
-install(DIRECTORY include/fruit/
-  DESTINATION "${INSTALL_INCLUDE_DIR}"
-  FILES_MATCHING PATTERN "*.h")
+# CPACK
 
 set(CPACK_PACKAGE_NAME "Fruit")
 set(CPACK_PACKAGE_VENDOR "Marco Poletti")

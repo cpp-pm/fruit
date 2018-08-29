@@ -15,3 +15,5 @@ bench_results
 /*.vcxproj.filters
 /CMakeSettings.json
 /*.vcxproj.user
+/_3rdParty
+/CMakeFiles
